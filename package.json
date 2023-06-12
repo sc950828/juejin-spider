@@ -1,0 +1,29 @@
+{
+  "name": "juejin-spider",
+  "version": "1.0.0",
+  "description": "掘金小册爬虫",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon ./src/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sc950828/juejin-spider.git"
+  },
+  "author": "randy",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sc950828/juejin-spider/issues"
+  },
+  "homepage": "https://github.com/sc950828/juejin-spider#readme",
+  "dependencies": {
+    "@koa/router": "^12.0.0",
+    "axios": "^1.4.0",
+    "koa": "^2.14.2",
+    "koa-body": "^6.0.1",
+    "mongoose": "^7.2.3"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22"
+  }
+}
