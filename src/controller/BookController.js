@@ -8,6 +8,8 @@ class BookController {
     // 获取请求体参数
     const { aid, uuid, booklet_id } = ctx.request.body;
 
+    console.log(aid, uuid, booklet_id);
+
     // 判断是否已经添加
     const repeatedBook = await Book.findOne({ booklet_id });
     if (repeatedBook) {
@@ -20,11 +22,18 @@ class BookController {
         // 获取书本数据
         const { data } = await axios.post(
           `https://api.juejin.cn/booklet_api/v1/booklet/get?aid=${aid}&uuid=${uuid}&spider=0`,
-          { booklet_id }
+          { booklet_id },
+          {
+            headers: {
+              cookie: `sessionid=${ctx.cookies.get("sessionid")}`,
+            },
+          }
         );
         const bookInfo = data.data;
+        console.log("书本信息", bookInfo);
+
         // 判断书本内容（没购买的小册书本信息为空）
-        if (Object.keys(bookInfo).length <= 0) {
+        if (!bookInfo || Object.keys(bookInfo).length <= 0) {
           return (ctx.body = "书本信息为空");
         }
 
@@ -48,12 +57,16 @@ class BookController {
               },
             }
           );
+
+          const sectionInfo = sectionData.data;
           const {
             section: { section_id, booklet_id, title, content, markdown_show },
-          } = sectionData.data;
+          } = sectionInfo;
+
+          console.log("章节信息", sectionInfo);
 
           // 保存章节信息
-          const sectionDetail = await new Section({
+          await new Section({
             section_id,
             booklet_id,
             title,
@@ -61,11 +74,11 @@ class BookController {
             markdown_show,
           }).save();
 
-          console.log(sectionDetail);
-
-          // 模拟人为请求，每获取一个章节停顿2秒
+          // 模拟人为请求，每获取一个章节停顿5秒
           await sleep(5000);
         }
+
+        console.log(`文章爬取完成，总共${book.sections.length}章节`);
 
         ctx.body = book;
       } catch (error) {
