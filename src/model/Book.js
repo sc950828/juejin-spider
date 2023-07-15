@@ -5,14 +5,17 @@ const BookSchema = new mongoose.Schema(
     booklet_id: {
       type: String,
     },
-    booklet: {
-      type: Object,
+    title: {
+      type: String,
     },
-    introduction: {
-      type: Object,
+    cover_img: {
+      type: String,
     },
-    sections: {
-      type: Object,
+    price: {
+      type: Number,
+    },
+    is_finished: {
+      type: Number,
     },
   },
   { timestamps: true }

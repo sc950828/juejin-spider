@@ -38,15 +38,21 @@ class BookController {
         }
 
         // 将书本信息存入我们自己的数据库
-        const { booklet, introduction, sections } = bookInfo;
+        const {
+          booklet: {
+            base_info: { title, cover_img, price, is_finished },
+          },
+        } = bookInfo;
+
         const book = await new Book({
           booklet_id,
-          booklet,
-          introduction,
-          sections,
+          title,
+          cover_img,
+          price,
+          is_finished,
         }).save();
 
-        for (const _section of book.sections) {
+        for (const _section of bookInfo.sections) {
           // 获取章节书本章节信息
           const { data: sectionData } = await axios.post(
             `https://api.juejin.cn/booklet_api/v1/section/get?aid=${aid}&uuid=${uuid}&spider=0`,
@@ -60,27 +66,37 @@ class BookController {
 
           const sectionInfo = sectionData.data;
           const {
-            section: { section_id, booklet_id, title, content, markdown_show },
+            section: {
+              section_id,
+              booklet_id,
+              title: section_title,
+              content,
+              markdown_show,
+              is_free,
+            },
           } = sectionInfo;
 
           console.log("章节信息", sectionInfo);
 
           // 保存章节信息
           await new Section({
-            section_id,
+            book_id: book.id,
             booklet_id,
-            title,
+            book_title: title,
+            section_id,
+            section_title,
             content,
             markdown_show,
+            is_free,
           }).save();
 
           // 模拟人为请求，每获取一个章节停顿5秒
           await sleep(5000);
         }
 
-        console.log(`文章爬取完成，总共${book.sections.length}章节`);
+        console.log(`文章爬取完成，总共${bookInfo.sections.length}章节`);
 
-        ctx.body = book;
+        ctx.body = bookInfo;
       } catch (error) {
         console.log(error);
         ctx.body = "爬取错误";
