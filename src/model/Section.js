@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const SectionSchema = new mongoose.Schema(
   {
-    // 书本id
+    // 自己数据库书本id
     book_id: {
       type: String,
     },
@@ -14,7 +14,7 @@ const SectionSchema = new mongoose.Schema(
     book_title: {
       type: String,
     },
-    // 章节id
+    // 原始章节id
     section_id: {
       type: String,
     },
@@ -22,6 +22,7 @@ const SectionSchema = new mongoose.Schema(
     section_title: {
       type: String,
     },
+    // 是否免费
     is_free: {
       type: Number,
     },
